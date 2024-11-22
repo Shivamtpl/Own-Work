@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Name</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .header {
+      background-color: yellow;
+      padding: 20px;
+    }
+    .button-container {
+      margin-top: 50px;
+    }
+    button {
+      background-color: lightblue;
+      padding: 15px 30px;
+      margin: 10px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    .show {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 50px;
+    }
+    .show button {
+      background-color: lightblue;
+      padding: 20px 30px;
+      margin: 10px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .show button:hover {
+      background-color: lightgreen;
+    }
+    .table-container {
+      margin-top: 30px;
+      display: none;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+    table, th, td {
+      border: 1px solid black;
+      padding: 10px;
+    }
+    .go-back-button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: orange;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    function showOwnerButtons() {
+      const password = prompt('Enter the password for the owner:');
+      if (password === 'owner123') {  // Change 'your-password' to your preferred password
+        document.getElementById('second-page').classList.remove('hidden');
+        document.getElementById('first-page').classList.add('hidden');
+      } else {
+        alert('Incorrect password');
+      }
+    }
+
+    function showButtons() {
+      document.getElementById('second-page').classList.remove('hidden');
+      document.getElementById('first-page').classList.add('hidden');
+    }
+
+    function generateTable(buttonId) {
+      document.getElementById('second-page').classList.add('hidden');
+      document.getElementById('third-page').classList.remove('hidden');
+
+      const tableContainer = document.getElementById('third-page-table');
+      tableContainer.style.display = 'block';
+      
+      let rows, cols, headers;
+
+      // Customize rows, columns, and header based on the button ID
+      switch (buttonId) {
+        case 'A':
+          rows = 3;
+          cols = 3;
+          headers = ['Name', 'Age', 'Location'];
+          
+          break;
+        case 'AA':
+          rows = 4;
+          cols = 4;
+          headers = ['Product', 'Price', 'Quantity', 'Total'];
+          break;
+        case 'AAA':
+          rows = 5;
+          cols = 5;
+          headers = ['Item', 'Category', 'Brand', 'Stock', 'Discount'];
+          break;
+        case 'B':
+          rows = 6;
+          cols = 6;
+          headers = ['ID', 'Name', 'Position', 'Department', 'Salary', 'Bonus'];
+          break;
+        // Add more cases as needed for other buttons
+        default:
+          rows = 6;
+          cols = 6;
+          headers = ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5', 'Header 6'];
+      }
+
+      let tableHTML = '<table><thead><tr>';
+      // Generate header
+      for (let i = 0; i < cols; i++) {
+        tableHTML += `<th>${headers[i]}</th>`;
+      }
+      tableHTML += '</tr></thead><tbody>';
+      // Generate cells
+      for (let i = 0; i < rows; i++) {
+        tableHTML += '<tr>';
+        for (let j = 0; j < cols; j++) {
+          tableHTML += `<td>Row ${i + 1} Col ${j + 1}</td>`;
+        }
+        tableHTML += '</tr>';
+      }
+      tableHTML += '</tbody></table>';
+
+      tableContainer.innerHTML = tableHTML;
+    }
+
+    function goBackToButtons() {
+      document.getElementById('third-page').classList.add('hidden');
+      document.getElementById('second-page').classList.remove('hidden');
+    }
+  </script>
+</head>
+<body>
+
+  <!-- First Page -->
+  <div id="first-page">
+    <div class="header">
+      <h1>Shop Name</h1>
+    </div>
+
+    <div class="button-container">
+      <button onclick="showOwnerButtons()">To Owner</button>
+      <button onclick="showButtons()">To Customer</button>
+      <button onclick="showButtons()">Special</button>
+    </div>
+  </div>
+
+  <!-- Second Page (Initially Hidden) -->
+  <div id="second-page" class="hidden">
+    <div class="show">
+      <button onclick="generateTable('A')">A</button>
+      <button onclick="generateTable('AA')">AA</button>
+      <button onclick="generateTable('AAA')">AAA</button>
+      <button onclick="generateTable('AAAA')">AAAA</button>
+      <button onclick="generateTable('B')">B</button>
+      <button onclick="generateTable('BB')">BB</button>
+      <button onclick="generateTable('BBB')">BBB</button>
+      <button onclick="generateTable('BBBB')">BBBB</button>
+      <button onclick="generateTable('C')">C</button>
+      <button onclick="generateTable('CC')">CC</button>
+      <button onclick="generateTable('CCC')">CCC</button>
+      <button onclick="generateTable('CCCC')">CCCC</button>
+      <button onclick="generateTable('D')">D</button>
+      <button onclick="generateTable('DD')">DD</button>
+      <button onclick="generateTable('DDD')">DDD</button>
+      <button onclick="generateTable('DDDD')">DDDD</button>
+      <button onclick="generateTable('E')">E</button>
+      <button onclick="generateTable('EE')">EE</button>
+      <button onclick="generateTable('EEE')">EEE</button>
+      <button onclick="generateTable('EEEE')">EEEE</button>
+    </div>
+  </div>
+
+  <!-- Third Page for Table Display -->
+  <div id="third-page" class="hidden">
+    <div id="third-page-table" class="table-container"></div>
+    <button class="go-back-button" onclick="goBackToButtons()">Go Back</button>
+  </div>
+
+</body>
+</html>

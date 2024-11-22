@@ -1,0 +1,33 @@
+
+.card {
+    background-color: lightblue;
+    text-align: center;
+    background-image: url(https://img.freepik.com/free-photo/snowcovered-mountains-providing-majestic-backdrop_91128-4524.jpg?t=st=1711366579~exp=1711370179~hmac=519288ff57d680570babcc17fb824a93937a8cf9e9a857409e86d8aeaecc05d4&w=1060);
+    background-size: cover;
+    width: 1200px;
+    height: 550px;
+}
+  
+  .main-heading {
+    color: blue;
+  }
+  
+  .paragraph {
+    color: grey;
+  }
+
+  
+    .button{
+     background-color: blueviolet;
+        color: white;
+        border-radius: 25px;
+        border-width: 0px;
+    }
+  .button-green
+  {
+background-color: green;
+  }
+  .button-orange
+  {
+    background-color: orange;
+  }

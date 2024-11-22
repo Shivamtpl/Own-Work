@@ -1,0 +1,326 @@
+<html>
+<head>
+    <title>Navadurga Kiranam</title>
+    <style>
+        /* Hide the sections initially */
+        #ownerSection, #customerSection, #tableSection {
+            display: none;
+        }
+
+        button {
+            font-size: 16px;
+            margin: 5px;
+            padding: 10px;
+        }
+
+        /* Buttons and search bar container */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* Buttons section styling */
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Search bar styling */
+        .search-container {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .search-input {
+            font-size: 16px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4682B4;
+            color: white;
+        }
+
+        .row-label {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        /* Dynamic Button Table Color Styling */
+        .dynamic-table th {
+            background-color: #4682B4;
+            color: white;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal input[type="password"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 80%;
+            display: block;
+            margin: 10px auto;
+        }
+    </style>
+
+    <script>
+        let previousSection = ''; // Variable to track the previous section (owner or customer)
+
+        // Custom table data for each button
+        const tableData = {
+            'Owner Button A': [
+                ["1", "", "Freedom", "", "", ""],
+                ["2", "", "Tasty Gold(sf)", "", "", ""],
+            ],
+            'Owner Button B': [
+                ["1", "", "Item B1", "", "", ""],
+                ["2", "", "Item B2", "", "", ""],
+            ],
+            // Add more table data for other buttons similarly...
+            'Customer Button A': [
+                ["1", "", "Customer Item A1", "", "", ""],
+                ["2", "", "Customer Item A2", "", "", ""],
+            ],
+            'Customer Button B': [
+                ["1", "", "Customer Item B1", "", "", ""],
+                ["2", "", "Customer Item B2", "", "", ""],
+            ]
+        };
+
+        // Custom button names and colors for Owner and Customer sections
+        const ownerButtonNames = [
+            'Owner Button A', 'Owner Button B', 'Owner Button C', 'Owner Button D', 'Owner Button E',
+            'Owner Button F', 'Owner Button G', 'Owner Button H', 'Owner Button I', 'Owner Button J',
+            'Owner Button K', 'Owner Button L', 'Owner Button M', 'Owner Button N', 'Owner Button O',
+            'Owner Button P', 'Owner Button Q', 'Owner Button R', 'Owner Button S', 'Owner Button T'
+        ];
+
+        const customerButtonNames = [
+            'Customer Button A', 'Customer Button B', 'Customer Button C', 'Customer Button D', 'Customer Button E',
+            'Customer Button F', 'Customer Button G', 'Customer Button H', 'Customer Button I', 'Customer Button J',
+            'Customer Button K', 'Customer Button L', 'Customer Button M', 'Customer Button N', 'Customer Button O',
+            'Customer Button P', 'Customer Button Q', 'Customer Button R', 'Customer Button S', 'Customer Button T'
+        ];
+
+        // Custom colors for Owner and Customer buttons
+        const ownerButtonColors = [
+            '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#33FFF9',
+            '#F9FF33', '#FF6F33', '#33D4FF', '#A633FF', '#FF33E4',
+            '#33FFAA', '#FF8F33', '#6B33FF', '#FFA633', '#33FFC9',
+            '#FF3380', '#33FFBF', '#BFF333', '#FF9633', '#33FF9E'
+        ];
+
+        const customerButtonColors = [
+            '#FFB433', '#33C4FF', '#FF5733', '#3380FF', '#FF3333',
+            '#33FF83', '#9E33FF', '#33FFCC', '#FF333D', '#8FFF33',
+            '#FF5C33', '#33FF70', '#FF338F', '#33B3FF', '#FF33C2',
+            '#33FF61', '#FF8033', '#33FFFA', '#FF33BB', '#33EFFF'
+        ];
+
+        // Function to show the Owner section after password verification (using modal)
+        function showOwnerSection() {
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+
+        // Function to handle the password submission
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === "owner123") {
+                previousSection = 'owner'; // Track that we're in the Owner section
+                document.getElementById('mainSection').style.display = 'none'; // Hide the main section
+                document.getElementById('ownerSection').style.display = 'block'; // Show the owner section
+                document.getElementById('passwordModal').style.display = 'none'; // Hide modal
+                document.getElementById('passwordInput').value = ''; // Clear the password input
+                loadButtons('ownerButtons', ownerButtonNames, ownerButtonColors);
+            } else {
+                alert("Incorrect password. Access denied.");
+            }
+        }
+
+        // Function to show the Customer section
+        function showCustomerSection() {
+            previousSection = 'customer'; // Track that we're in the Customer section
+            document.getElementById('mainSection').style.display = 'none'; // Hide the main section
+            document.getElementById('customerSection').style.display = 'block'; // Show the customer section
+            loadButtons('customerButtons', customerButtonNames, customerButtonColors);
+        }
+
+        // Function to load 20 buttons dynamically based on the provided names and colors
+        function loadButtons(containerId, buttonNames, buttonColors) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear previous buttons
+
+            // Create buttons using the provided names and colors
+            buttonNames.forEach((name, index) => {
+                const button = document.createElement('button');
+                button.innerHTML = name;
+                button.style.backgroundColor = buttonColors[index];  // Set the button color
+                button.classList.add('dynamic-button');  // Add class for filtering
+                button.onclick = function() {
+                    showTableSection(name);  // Call to show the table section
+                };
+                container.appendChild(button);
+            });
+        }
+
+        // Function to show the table section with the dynamic table
+        function showTableSection(buttonName) {
+            document.getElementById('ownerSection').style.display = 'none'; // Hide Owner section
+            document.getElementById('customerSection').style.display = 'none'; // Hide Customer section
+            document.getElementById('tableSection').style.display = 'block'; // Show table section
+
+            createTable(buttonName);  // Create the table based on the button clicked
+        }
+
+        // Function to create the custom table
+        function createTable(buttonName) {
+            const tableContainer = document.getElementById('dynamicTable');
+            tableContainer.innerHTML = ''; // Clear any existing table
+
+            const table = document.createElement('table');
+            const tableHeader = document.createElement('thead');
+            const tableBody = document.createElement('tbody');
+
+            // Define the header columns
+            const headerRow = document.createElement('tr');
+            const headers = ["S.No", "Image", "Item Name", "250g", "500g", "1kg"];
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            // Get the data for the clicked button
+            const data = tableData[buttonName] || [];
+
+            // Populate the table rows
+            data.forEach(rowData => {
+                const row = document.createElement('tr');
+                rowData.forEach(cellData => {
+                    const td = document.createElement('td');
+                    td.textContent = cellData;
+                    row.appendChild(td);
+                });
+                tableBody.appendChild(row);
+            });
+
+            table.appendChild(tableHeader);
+            table.appendChild(tableBody);
+            tableContainer.appendChild(table);
+        }
+
+        // Function to go back to the previous section (either Owner or Customer)
+        function goBack() {
+            document.getElementById('tableSection').style.display = 'none';  // Hide the table section
+            if (previousSection === 'owner') {
+                document.getElementById('ownerSection').style.display = 'block';  // Show Owner section
+            } else if (previousSection === 'customer') {
+                document.getElementById('customerSection').style.display = 'block';  // Show Customer section
+            } else {
+                // If we are in the Owner or Customer section, go back to the main section
+                document.getElementById('ownerSection').style.display = 'none';
+                document.getElementById('customerSection').style.display = 'none';
+                document.getElementById('mainSection').style.display = 'block';
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Main Section -->
+    <div id="mainSection">
+        <h1 style="font-size: 80px; color: blue;">Navadurga Kiranam</h1>
+        <button onclick="showOwnerSection()" style="background-color: rgb(37, 234, 37);">To Owner</button>
+        <button onclick="showCustomerSection()" style="background-color: rgb(37, 234, 37);">To Customer</button>
+    </div>
+
+    <!-- Owner Section -->
+    <div id="ownerSection">
+        <h1>Owner Section</h1>
+        <div class="buttons-container">
+            <!-- Search Bar for Owner Section -->
+            <div class="search-container">
+                <input id="ownerSearch" type="text" class="search-input" placeholder="Search Owner Buttons" onkeyup="searchButtons('ownerButtons', 'ownerSearch')">
+            </div>
+
+            <!-- Owner Buttons -->
+            <div id="ownerButtons" class="buttons"></div>
+        </div>
+        <br>
+        <button onclick="goBack()" style="background-color: rgb(234, 37, 37);">Go Back</button>
+    </div>
+
+    <!-- Customer Section -->
+    <div id="customerSection">
+        <h1>Customer Section</h1>
+        <div class="buttons-container">
+            <!-- Search Bar for Customer Section -->
+            <div class="search-container">
+                <input id="customerSearch" type="text" class="search-input" placeholder="Search Customer Buttons" onkeyup="searchButtons('customerButtons', 'customerSearch')">
+            </div>
+
+            <!-- Customer Buttons -->
+            <div id="customerButtons" class="buttons"></div>
+        </div>
+        <br>
+        <button onclick="goBack()" style="background-color: rgb(234, 37, 37);">Go Back</button>
+    </div>
+
+    <!-- Table Section -->
+    <div id="tableSection">
+        <h1>Item Table</h1>
+        <div id="dynamicTable"></div> <!-- Table will be dynamically inserted here -->
+        <br>
+        <button onclick="goBack()" style="background-color: rgb(234, 37, 37);">Go Back</button>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2>Enter Password</h2>
+            <input id="passwordInput" type="password" placeholder="Enter password">
+            <button onclick="checkPassword()" style="background-color: rgb(37, 234, 37);">Submit</button>
+        </div>
+    </div>
+</body>
+</html>

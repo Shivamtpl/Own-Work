@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>MindLess</title>
+        <script>
+            function createButtons(type, buttonNames) {
+                const container = document.getElementById('buttonContainer');
+                container.innerHTML = ''; // Clear previous buttons
+
+                // Generate buttons with the provided names
+                buttonNames.forEach((name, index) => {
+                    const button = document.createElement('button');
+                    button.innerHTML = name; // Set the custom name
+                    button.style.fontSize = '16px';
+                    button.style.margin = '5px';
+                    container.appendChild(button);
+                });
+            }
+
+            function requestPassword() {
+                const password = prompt("Please enter the password for Owner access:");
+
+                // Check if the password is correct
+                if (password === "owner123") {
+                    // Custom button names for the "Owner" buttons
+                    const ownerButtonNames = [
+                        "Owner Button 1", "Owner Button 2", "Owner Button 3", "Owner Button 4", "Owner Button 5",
+                        "Owner Button 6", "Owner Button 7", "Owner Button 8", "Owner Button 9", "Owner Button 10",
+                        "Owner Button 11", "Owner Button 12", "Owner Button 13", "Owner Button 14", "Owner Button 15",
+                        "Owner Button 16", "Owner Button 17", "Owner Button 18", "Owner Button 19", "Owner Button 20"
+                    ];
+                    createButtons('Owner', ownerButtonNames); // Generate "Owner" buttons with custom names
+                } else {
+                    alert("Incorrect password. Access denied.");
+                }
+            }
+
+            function customerButtons() {
+                // Custom button names for the "Customer" buttons
+                const customerButtonNames = [
+                    "Customer Button A", "Customer Button B", "Customer Button C", "Customer Button D", "Customer Button E",
+                    "Customer Button F", "Customer Button G", "Customer Button H", "Customer Button I", "Customer Button J",
+                    "Customer Button K", "Customer Button L", "Customer Button M", "Customer Button N", "Customer Button O",
+                    "Customer Button P", "Customer Button Q", "Customer Button R", "Customer Button S", "Customer Button T"
+                ];
+                createButtons('Customer', customerButtonNames); // Generate "Customer" buttons with custom names
+            }
+        </script>
+    </head>
+    <body>
+        <h1 style="font-size: 80px; color: blue;">Navadurga Kiranam</h1>
+
+        <!-- Main buttons -->
+        <button style="font-size: 20px; padding: 10px 20px; margin-right: 10px;" onclick="requestPassword()">To Owner</button>
+        <button style="font-size: 20px; padding: 10px 20px; background-color: lightgreen;" onclick="customerButtons()">To Customer</button>
+
+        <!-- Container to hold the generated buttons -->
+        <div id="buttonContainer" style="margin-top: 20px;"></div>
+    </body>
+</html>

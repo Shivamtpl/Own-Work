@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivaya</title>
+    <style>
+        #ownerSection, #customerSection, #tableSection {
+            display: none;
+        }
+
+        button {
+            font-size: 16px;
+            margin: 5px;
+            padding: 10px;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .common-button {
+    background-color: rgba(51, 153, 255, 0.5); /* Transparent light blue */
+    border: 2px solid #3399ff; /* Matching solid border */
+    color: #fff;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    /* Hover effect */
+.common-button:hover {
+    background-color: rgba(51, 153, 255, 0.8);
+    transform: scale(1.05);
+}
+
+
+        .search-input {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4682B4;
+            color: white;
+        }
+    </style>
+    <script>
+        let historyStack = []; // Track navigation history
+
+        const ownerTableData = {
+            'Oils': {
+                headers: ["S.No","image", "Oil Name", "250ml", "500ml", "1L"],
+                rows: [
+                    ["1",'<img src="./Freedom.png" alt="Freedom" width="50" height="50">',
+                    "Freedom", "", "70", "135"],
+                    ["2", "","Tasty Gold(sf)", "28", "62", "130"],
+                    ["3", "","Vijay", "", "", "155"]
+                ]
+            },
+            
+            'Outside Item': {
+                headers: ["S.No","image", "Item Name", "250g", "500g", "1Kg"],
+                rows: [
+
+                ["1", "", "Makkalu", "", "", "38"],
+                ["2", "", "Anumulu", "", "", "120"],
+                ["3", "", "Anumulu(pappu)", "", "", "130"],
+                ["4", "", "Alichentalu", "", "50", "100"],
+                ["5", "", "Alichentalu(pappu)", "", "", "120"],
+                ["6", "", "Chaniyalu(red)", "", "", "80"],
+                ["7", "", "Chaniyalu(white)", "", "", "145"],
+                ["8", "", "Batani(green)", "", "", "135"],
+                ["9", "", "Batani(white)", "", "", "65"],
+                ["10", "", "Dhaniya", "", "", "110"],
+                ["11", "", "Uluvalu", "", "", "120"],
+            ]          
+        },
+    };
+
+        const customerTableData = {
+            'Oils': {
+                headers: ["S.No", "image","Item Name", "250ml", "500ml", "1L"],
+                rows: [
+                ["1",'<img src="./Freedom.png" alt="Freedom" width="50" height="50">',
+                "Freedom", "", "70", "145"],
+                ["2", "","Tasty Gold(sf)", "", "", "130"],
+                ["3", "","Vijay", "", "", "175"]
+                ]
+            },
+            'Outside Item': {
+                headers: ["S.No","image", "Item Name", "250g", "500g", "1Kg"],
+                rows: [
+
+                ["1", "", "Makkalu", "", "", "38"],
+                ["2", "", "Anumulu", "", "", "120"],
+                ["3", "", "Anumulu(pappu)", "", "", "130"],
+                ["4", "", "Alichentalu", "", "50", "100"],
+                ["5", "", "Alichentalu(pappu)", "", "", "120"],
+                ["6", "", "Chaniyalu(red)", "", "", "80"],
+                ["7", "", "Chaniyalu(white)", "", "", "145"],
+                ["8", "", "Batani(green)", "", "", "135"],
+                ["9", "", "Batani(white)", "", "", "65"],
+                ["10", "", "Dhaniya", "", "", "110"],
+                ["11", "", "Uluvalu", "", "", "120"],
+            ]          
+        },
+       };
+
+        function loadButtons(containerId, buttonNames, buttonColors, section) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            buttonNames.forEach((name, index) => {
+                const button = document.createElement('button');
+                button.textContent = name;
+                button.style.backgroundColor = buttonColors[index];
+                button.onclick = () => navigateToTable(name, section);
+                container.appendChild(button);
+            });
+        }
+
+        function showOwnerSection() {
+            const password = prompt("Enter password for Owner access:");
+            if (password === "owner123") {
+                navigateTo('ownerSection');
+                loadButtons('ownerButtons', ['Oils','Outside Item'], 'common-button', 'owner');
+            } else {
+                alert("Incorrect password.");
+            }
+        }
+
+        function showCustomerSection() {
+            navigateTo('customerSection');
+            loadButtons('customerButtons', ['Oils','Outside Item'], 'common-button', 'customer');
+        }
+
+        function navigateToTable(buttonName, section) {
+            navigateTo('tableSection');
+            createTable(buttonName, section);
+        }
+
+        function navigateTo(sectionId) {
+            const sections = ['mainSection', 'ownerSection', 'customerSection', 'tableSection'];
+            sections.forEach(id => document.getElementById(id).style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+            historyStack.push(sectionId); // Track navigation
+        }
+
+        // Function to go back to the previous section
+        function goBack() {
+            historyStack.pop(); // Remove the current section
+            const previousSection = historyStack.pop(); // Get the previous section
+
+            if (previousSection) {
+                navigateTo(previousSection);
+            } else {
+                navigateTo('mainSection'); // Default to the main section if history is empty
+            }
+        }
+
+        function createTable(buttonName, section) {
+            const tableContainer = document.getElementById('dynamicTable');
+            tableContainer.innerHTML = '';
+            const data = section === 'owner' ? ownerTableData[buttonName] : customerTableData[buttonName];
+
+            const table = document.createElement('table');
+            const tableHeader = document.createElement('thead');
+            const tableBody = document.createElement('tbody');
+
+            const headerRow = document.createElement('tr');
+            data.headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            data.rows.forEach(rowData => {
+                const row = document.createElement('tr');
+                rowData.forEach(cellData => {
+                    const td = document.createElement('td');
+                    td.textContent = cellData;
+                    td.innerHTML = cellData;  // Use innerHTML here to render HTML tags in the cell
+                   row.appendChild(td);
+                });
+                tableBody.appendChild(row);
+            });
+
+            table.appendChild(tableHeader);
+            table.appendChild(tableBody);
+            tableContainer.appendChild(table);
+
+            const searchBar = document.createElement('input');
+            searchBar.type = 'text';
+            searchBar.placeholder = 'Search Items';
+            searchBar.classList.add('search-input');
+            searchBar.onkeyup = () => searchTable(searchBar.value);
+            tableContainer.prepend(searchBar);
+        }
+
+        function searchButtons(query) {
+            query = query.toLowerCase();
+            const buttons = document.querySelectorAll('.buttons button');
+            buttons.forEach(button => {
+                const text = button.textContent.toLowerCase();
+                button.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        function searchTable(query) {
+    query = query.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        let matchFound = false;
+
+        // Loop through all cells in the row
+        Array.from(row.cells).forEach(cell => {
+            if (cell.textContent.toLowerCase().includes(query)) {
+                matchFound = true; // If any cell matches the query, keep the row visible
+            }
+        });
+
+        // Show the row if match found, otherwise hide it
+        row.style.display = matchFound ? '' : 'none';
+    });
+}
+
+    </script>
+</head>
+<body>
+    <!-- Main Section -->
+    <div id="mainSection">
+        <h1 style="font-size: 80px; color: blue;"><marquee>Navadurga Kiranam</marquee></h1>
+        <button onclick="showOwnerSection()" style="background-color: rgb(37, 234, 37);">To Owner</button>
+        <button onclick="showCustomerSection()" style="background-color: rgb(37, 234, 37);">To Customer</button>
+    </div>
+
+    <div id="ownerSection">
+        <h1>Owner Section</h1>
+        <input type="text" class="search-input" placeholder="Search Buttons" onkeyup="searchButtons(this.value)">
+        <div id="ownerButtons" class="buttons"></div>
+        <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
+    </div>
+
+    <div id="customerSection">
+        <h1>Customer Section</h1>
+        <input type="text" class="search-input" placeholder="Search Buttons" onkeyup="searchButtons(this.value)">
+        <div id="customerButtons" class="buttons"></div>
+        <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
+    </div>
+
+    <div id="tableSection">
+        <h1>Item Table</h1>
+        <div id="dynamicTable"></div>
+        <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
+    </div>
+</body>
+</html>

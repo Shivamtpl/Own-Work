@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-with, initial-scale=1.0">
+<title>Shivaya</title>
+
+<link rel="stylesheet" href="owner.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <!-- Main Section -->
+    <!-- <div id="mainSection">
+        <h1 style="font-size: 80px; color: blue;">Navadurga Kiranam</h1>
+        <button onclick="showOwnerSection()" style="background-color: rgb(37, 234, 37);">To Owner</button>
+    </div> -->
+    <div id="mainSection">
+        <div class="background">
+            <h1>
+           Navadurga<span>Creative</span> 
+           <span>Dynamic</span> 
+           <span>Awesome</span>
+           <button onclick="showOwnerSection()" style="background-color: rgb(37, 234, 37);">To Owner</button>
+         </h1> 
+        </div>
+    </div>
+
+
+    <div id="ownerSection">
+        <h1>Owner Section</h1>
+        <input type="text" class="search-input" placeholder="Search Buttons" onkeyup="searchButtons(this.value)">
+        <div id="ownerButtons" class="buttons"></div>
+        <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
+    </div>
+    <div id="tableSection">
+        <h1>Item Table</h1>
+        <div id="dynamicTable"></div>
+        <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
+    </div>
+
+    <script src="owner.js"></script> <!-- Link to external JavaScript file -->
+
+</body>
+</html>
