@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shivaya</title>
+
+        <!-- Include jsPDF and jsPDF AutoTable -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.27/jspdf.plugin.autotable.min.js"></script>
+
+        <style>
+            #ownerSection, #tableSection {
+                display: none;
+            }
+            button {
+                font-size: 16px;
+                margin: 5px;
+                padding: 10px;
+            }
+            .button-container {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .common-button {
+                background-color: rgba(51, 153, 255, 0.5);
+                border: 2px solid #3399ff;
+                color: #fff;
+                padding: 10px 20px;
+                margin: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+
+    /* Hover effect */
+
+            .common-button:hover {
+                /* background-color: rgba(51, 153, 255, 0.8); */
+              background-color: rgba(12, 239, 61, 0.8); 
+                transform: scale(1.05);
+            }
+
+            .search-input {
+                margin-bottom: 10px;
+                padding: 10px;
+                width: 100%;
+                box-sizing: border-box;
+                font-size: 16px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th, td {
+                border: 1px solid black;
+                padding: 10px;
+                text-align: center;
+            }
+
+            th {
+                background-color: #4682B4;
+                color: white;
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('downloadPdfButton').addEventListener('click', downloadTableAsPDF);
+            });
+
+            // Function to download table as PDF
+            function downloadTableAsPDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                const tableContainer = document.getElementById('dynamicTable');
+                const table = tableContainer.querySelector('table');
+
+                if (!table) {
+                    alert("No table found to download!");
+                    return;
+                }
+
+                const tableData = [];
+                const tableHeaders = [];
+
+                // Extract headers
+                const headers = table.querySelectorAll('thead th');
+                headers.forEach(header => tableHeaders.push(header.textContent));
+
+                // Extract rows
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const rowData = [];
+                    row.querySelectorAll('td').forEach(cell => rowData.push(cell.textContent || ""));
+                    tableData.push(rowData);
+                });
+
+                // Add title to PDF
+                doc.text("Item Table", 10, 10);
+
+                // Generate table in the PDF
+                doc.autoTable({
+                    head: [tableHeaders],
+                    body: tableData,
+                    startY: 20,
+                    theme: 'grid'
+                });
+
+                // Save the PDF
+                doc.save('ItemTable.pdf');
+            }
+
+            let historyStack = [];
+
+            const ownerTableData = {
+                'Rice': {
+                    headers: ["S.No", "Brand Name", "Quantity", "Price"],
+                    rows: [
+                        ["1", "JSR", "24kg", "1350"],
+                        ["2", "RK", "24kg", "1200"],
+                        ["3", "Tomato Rice", "24kg", "1080"],
+                        ["4", "Basmati Rice", "1kg", "115"],
+                    ]
+                },
+                'Oils': {
+                headers: ["S.No","image", "Oil Name", "250ml", "500ml", "1L","Other"],
+                rows: [
+                    ["1", '<img src="./Freedom.png" alt="Freedom" width="50" height="50">',
+                    "Freedom", "", "75", "145"],
+                    ["2", "", "Tasty Gold", "28", "73", "135","120(800ml)"],
+                    ["3", "", "Tasty Life", "28", "73", "135","120(800ml)"],
+                    ["4", "","Vijay", "","", "", "155"],
+                    ["5", "","Fortune", "", "","", "280(2L)"],
+                    ["6", "","Freedom","", "","", "280(2L)"],
+                    ["7", "","Parachute", "", "", "",""],
+                    ["8", "","Mustard", "", "", "",""],
+                    ["9", "","Pooja(oil)", "", "", "60(400ml)","120(800ml)"],
+
+                ]
+                },
+                "Atta's & Rava": {
+                headers: ["S.No", "Atta Name", "500g", "1Kg", "5Kg"],
+                rows: [
+                    ["1", "Aashirvaad", "60","280"],
+                    ["2", "Fortune","", "42", ""],
+                    ["3", "suprabhat", "", "44", "210"],
+                    ["4", "Basan", "", "55", "110"],
+                    ["5", "Ragi Flour", "", "57", ""],
+                    ["6", "Maida", "", "45", ""],
+                    ["7", "Idly Rava", "", "57", ""],
+                    ["8", "Rava(Suji)", "", "40", ""],
+                    ["9", "Bansi Rava", "25", "55", ""],
+        ]
+        },
+        "Chilli Powder,etc": {
+                headers: ["S.No", "Item Name", "50g", "100g", "250g", "500g",],
+                rows: [
+                    ["1", "Aashirvad (chilli)", "", "", "", "160"],
+                    ["2", "Aachi(chilli)","","28","55(200g)",""],
+                    ["3", "Eastern(chilli)", "", "34", "72", "136"],
+                    ["4", "Eastern(Haldi)", "", "", "60", "120"],
+                    ["5", "Eastern Coriander Powder", "", "", "", "95"],
+        ]
+        },
+        'Outside Item': {
+                headers: ["S.No", "Item Name", "250g", "500g", "1Kg"],
+                rows: [
+
+                ["1", "Makkalu", "", "", "38"],
+                ["2", "Anumulu", "", "", "120"],
+                ["3", "Anumulu(pappu)", "", "", "130"],
+                ["4", "Alichentalu", "", "50", "100"],
+                ["5", "Alichentalu(pappu)", "", "", "120"],
+                ["6", "Chaniyalu(red)", "", "", "80"],
+                ["7", "Chaniyalu(white)", "", "", "145"],
+                ["8", "Batani(green)", "", "", "185"],
+                ["9", "Batani(white)", "", "", "65"],
+                ["10", "Dhaniya", "", "", "110"],
+                ["11", "Uluvalu", "", "", "120"],
+            ]          
+        },
+         'Flipkart' : {
+            headers : ["S.No", "Image", "Item Name", "100g", "250g", "500g", "1Kg","Price"],
+            rows : [
+                ["1", "", "All-out(flipkart)", "", "", "", "", "160(4)"],
+                ["2", "", "Teaveda", "", "60", "", "", ""],
+                ["3", "", "Gemini", "55", "", "115", "430", ""],
+                ["4", "", "Fairy & Lovely", "", "", "", ""], "58(25g)",
+                ["5", "", "Badam(Almonds)", "", "", "350", "", ""],
+                ["6", "", "Kaju", "", "", "450", "", ""],
+                ]
+        },
+        'Soaps' : {
+            headers : ["S.No", "Image", "Item Name", "Small", "Medium", "Big"],
+            rows : [
+                ["1", "", "Santoor", "37(4p)", "", ""],
+                ["2", "", "Cintoor", "110(12p)", "", ""],
+                ["3", "", "Dettol", "", "", ""],
+                ["4", "", "Lifebuoy", "", "", ""],
+        ]
+        },
+        'Papudalu' : {
+            headers : ["S.No", "Image", "Item Name", "1Kg", "5Kg", "Price"],
+            rows : [
+                ["1", "","Bonggulu", "55", "", ""],
+                ["2", "","Bats", "68", "340", ""],
+                ["3", "","Pasta", "50", "250", ""],
+                ["4", "","Papad", "", "", "100(10)"],
+        ]
+        },
+        "Other's'" : {
+            headers : ["S.No", "Image", "Item Name", "Weight", "Price"],
+            rows : [
+                ["1", "", "Noodle's", "", "360(10)"]
+        ]
+        },
+
+            };
+
+            function loadButtons(containerId, buttonNames, buttonClass, section) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                buttonNames.forEach(name => {
+                    const button = document.createElement('button');
+                    button.textContent = name;
+                    button.className = buttonClass;
+                    button.onclick = () => navigateToTable(name, section);
+                    container.appendChild(button);
+                });
+            }
+
+            function showOwnerSection() {
+                navigateTo('ownerSection');
+                loadButtons('ownerButtons', ['Rice', 'Oils', "Atta's & Rava", "Chilli Powder,etc",'Outside Item', 
+                'Flipkart', 'Soaps', 'Papudalu', "Other's'"], 'common-button', 'owner');
+            }
+
+            // function navigateToTable(buttonName, section) {
+            //     navigateTo('tableSection');
+            //     createTable(buttonName, section);
+            // }
+         function navigateToTable(buttonName, section) {
+              navigateTo('tableSection');
+
+             // Update the table title with the button name
+              const tableTitle = document.getElementById('tableTitle');
+              tableTitle.textContent = buttonName + " Table";
+
+             // Create the table
+            createTable(buttonName, section);
+        }
+
+
+            function navigateTo(sectionId) {
+                const sections = ['mainSection', 'ownerSection', 'tableSection'];
+                sections.forEach(id => document.getElementById(id).style.display = 'none');
+                document.getElementById(sectionId).style.display = 'block';
+                historyStack.push(sectionId);
+            }
+
+            function goBack() {
+                historyStack.pop();
+                const previousSection = historyStack.pop();
+                navigateTo(previousSection || 'mainSection');
+            }
+
+            function createTable(buttonName, section) {
+                const tableContainer = document.getElementById('dynamicTable');
+                tableContainer.innerHTML = '';
+                const data = ownerTableData[buttonName];
+
+                const table = document.createElement('table');
+                const tableHeader = document.createElement('thead');
+                const tableBody = document.createElement('tbody');
+
+                const headerRow = document.createElement('tr');
+                data.headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    headerRow.appendChild(th);
+                });
+                tableHeader.appendChild(headerRow);
+
+                data.rows.forEach(rowData => {
+                    const row = document.createElement('tr');
+                    rowData.forEach(cellData => {
+                        const td = document.createElement('td');
+                        td.textContent = cellData;
+                        td.innerHTML = cellData;  // Ensure images render correctly
+                        row.appendChild(td);
+                    });
+                    tableBody.appendChild(row);
+                });
+
+                table.appendChild(tableHeader);
+                table.appendChild(tableBody);
+                tableContainer.appendChild(table);
+
+                const searchBar = document.createElement('input');
+                searchBar.type = 'text';
+                searchBar.placeholder = 'Search Items';
+                searchBar.className = 'search-input';
+                searchBar.onkeyup = () => searchTable(searchBar.value);
+                tableContainer.prepend(searchBar);
+            }
+            
+            function searchButtons(query) {
+            query = query.toLowerCase();
+            const buttons = document.querySelectorAll('.buttons button');
+            buttons.forEach(button => {
+                const text = button.textContent.toLowerCase();
+                button.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+            function searchTable(query) {
+                query = query.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const matchFound = Array.from(row.cells).some(cell => 
+                        cell.textContent.toLowerCase().includes(query)
+                    );
+                    row.style.display = matchFound ? '' : 'none';
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <!-- Main Section -->
+        <div id="mainSection">
+            <h1 style="font-size: 80px; color: blue;"><marquee>Navadurga Kiranam</marquee></h1>
+            <button onclick="showOwnerSection()" style="background-color: rgb(37, 234, 37);">To Owner</button>
+        </div>
+
+        <!-- Owner Section -->
+        <div id="ownerSection">
+            <h1>Owner Section</h1>
+            <input type="text" class="search-input" placeholder="Search Buttons" onkeyup="searchButtons(this.value)">
+            <div id="ownerButtons" class="buttons"></div>
+            <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
+        </div>
+
+        <!-- Table Section -->
+        <div id="tableSection">
+            <h1 id="tableTitle">Item Table</h1>
+            <div id="dynamicTable"></div>  
+            <button id="downloadPdfButton" style="background-color: #4682B4; color: white;">Download PDF</button>
+            <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
+        </div>
+    </body>
+</html>
