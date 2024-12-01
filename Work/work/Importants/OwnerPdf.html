@@ -192,17 +192,19 @@
                 ["11", "Uluvalu", "", "", "120"],
             ]          
         },
-         'Flipkart' : {
-            headers : ["S.No", "Image", "Item Name", "100g", "250g", "500g", "1Kg","Price"],
+
+         'Online': {
+            headers : ["S.No", "Item Name", "100g", "250g", "500g", "1Kg","Price"],
             rows : [
-                ["1", "", "All-out(flipkart)", "", "", "", "", "160(4)"],
-                ["2", "", "Teaveda", "", "60", "", "", ""],
-                ["3", "", "Gemini", "55", "", "115", "430", ""],
-                ["4", "", "Fairy & Lovely", "", "", "", ""], "58(25g)",
-                ["5", "", "Badam(Almonds)", "", "", "350", "", ""],
-                ["6", "", "Kaju", "", "", "450", "", ""],
+                ["1", "All-out(flipkart)", "", "", "", "", "160(4)"],
+                ["2", "Teaveda", "", "60", "", "", ""],
+                ["3", "Gemini", "55", "", "115", "430", ""],
+                ["4", "Fairy & Lovely", "", "", "", "", "58(25g)"],
+                ["5", "Badam(Almonds)", "", "", "350", "", ""],
+                ["6", "Kaju", "", "", "450", "", ""],
                 ]
         },
+
         'Soaps' : {
             headers : ["S.No", "Image", "Item Name", "Small", "Medium", "Big"],
             rows : [
@@ -221,6 +223,7 @@
                 ["4", "","Papad", "", "", "100(10)"],
         ]
         },
+
         "Other's'" : {
             headers : ["S.No", "Image", "Item Name", "Weight", "Price"],
             rows : [
@@ -243,9 +246,15 @@
             }
 
             function showOwnerSection() {
+                const password = prompt("Enter password for Owner access:");
                 navigateTo('ownerSection');
-                loadButtons('ownerButtons', ['Rice', 'Oils', "Atta's & Rava", "Chilli Powder,etc",'Outside Item', 
-                'Flipkart', 'Soaps', 'Papudalu', "Other's'"], 'common-button', 'owner');
+                if(password==="owner123") {
+                navigateTo('ownerSection');
+                loadButtons('ownerButtons', ['Rice', 'Oils', "Atta's & Rava", "Chilli Powder,etc",'Outside Item',
+                'Online', 'Soaps', 'Papudalu', "Other's'"], 'common-button', 'owner');
+            } else{
+                alert("Incorrect password");
+            }
             }
 
             // function navigateToTable(buttonName, section) {
