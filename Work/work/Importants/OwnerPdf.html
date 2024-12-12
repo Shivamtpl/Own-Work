@@ -73,6 +73,39 @@
                 background-color: #4682B4;
                 color: white;
             }
+
+            ****aurora-text****
+            body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #000;
+}
+
+.aurora-text {
+    font-size: 4rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #ff007c, #ffb400, #00ffb0, #007bff, #7000ff);
+    background-size: 300%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: aurora 5s infinite linear;
+}
+
+/* Animation for moving gradient */
+@keyframes aurora {
+    0% {
+        background-position: 0%;
+    }
+    100% {
+        background-position: 100%;
+    }
+}
+
         </style>
 
         <script>
@@ -350,7 +383,8 @@
     <body>
         <!-- Main Section -->
         <div id="mainSection">
-            <h1 style="font-size: 80px; color: blue;"><marquee>Navadurga Kiranam</marquee></h1>
+            <!-- <h1 style="font-size: 80px; color: blue;"><marquee>Navadurga Kiranam</marquee></h1> -->
+            <h1 class="aurora-text">Navadurga Kiranam</h1>
             <button onclick="showOwnerSection()" style="background-color: rgb(37, 234, 37);">To Owner</button>
         </div>
 
