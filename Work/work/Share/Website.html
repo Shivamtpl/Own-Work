@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narasimya</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card {
+            width: 200px;
+            padding: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            border-radius: 5px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .price {
+            color: green;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .card-button {
+            width: 100%;
+            padding: 10px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .total {
+            font-size: 20px;
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .action-buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #34ef05;
+            background-color: rgb(34, 56, 56);
+
+        }
+
+        .back-to-shop {
+            background-color: green;
+            color: white;
+        }
+
+        .clear-cart {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Navadurga Kiranam</h1>
+    </header>
+
+    <div class="container">
+        <!-- Shop Section -->
+        <section id="shopSection">
+            <h2>Ur's Shop</h2>
+            <main>
+                <div class="card">
+                    <img src="../images/Freedom.png" alt="Freedom Oil">
+                    <div class="card-title">Freedom Oil</div>
+                    <div class="price">₹145</div>
+                    <button class="card-button" onclick="addToCart('Freedom Oil', 145)">Add to Cart</button>
+                </div>
+                <div class="card">
+                    <img src="../images/parle-g.png" alt="Parle-G Biscuits">
+                    <div class="card-title">Parle-G Biscuits</div>
+                    <div class="price">₹10</div>
+                    <button class="card-button" onclick="addToCart('Parle-G Biscuits', 10)">Add to Cart</button>
+                </div>
+                <div class="card">
+                    <img src="../images/CloseUp.png" alt="CloseUp Toothpaste">
+                    <div class="card-title">CloseUp Toothpaste</div>
+                    <div class="price">₹50</div>
+                    <button class="card-button" onclick="addToCart('CloseUp Toothpaste', 50)">Add to Cart</button>
+                </div>
+            </main>
+            <div class="action-buttons">
+                <button onclick="showCart()">My Bag</button>
+            </div>
+        </section>
+
+        <!-- Cart Section -->
+        <section id="cartSection" class="hidden">
+            <h2>My Cart</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Item</th>
+                        <th>Price (₹)</th>
+                    </tr>
+                </thead>
+                <tbody id="cartItems">
+                    <!-- Cart items will be dynamically inserted here -->
+                </tbody>
+            </table>
+            <div class="total" id="totalPrice">Total: ₹0</div>
+            <div class="action-buttons">
+                <button class="back-to-shop" onclick="showShop()">Back to Shop</button>
+                <button class="clear-cart" onclick="clearCart()">Clear Cart</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Function to add items to the cart
+        function addToCart(itemName, itemPrice) {
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            cartItems.push({ name: itemName, price: itemPrice });
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            // alert(`${itemName} has been added to your cart!`);
+        }
+
+        // Function to show the cart section
+        function showCart() {
+            document.getElementById('shopSection').classList.add('hidden');
+            document.getElementById('cartSection').classList.remove('hidden');
+            loadCart();
+        }
+
+        // Function to show the shop section
+        function showShop() {
+            document.getElementById('cartSection').classList.add('hidden');
+            document.getElementById('shopSection').classList.remove('hidden');
+        }
+
+        // Function to load cart items
+        function loadCart() {
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartTable = document.getElementById('cartItems');
+            const totalPriceElement = document.getElementById('totalPrice');
+
+            if (cartItems.length === 0) {
+                cartTable.innerHTML = '<tr><td colspan="3">Your cart is empty!</td></tr>';
+                totalPriceElement.innerHTML = 'Total: ₹0';
+                return;
+            }
+
+            let total = 0;
+            cartTable.innerHTML = '';
+            cartItems.forEach((item, index) => {
+                total += item.price;
+                cartTable.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td>₹${item.price}</td>
+                    </tr>
+                `;
+            });
+
+            totalPriceElement.innerHTML = `Total: ₹${total}`;
+        }
+
+        // Function to clear the cart
+        function clearCart() {
+            localStorage.removeItem('cart');
+            // alert('Cart has been cleared!');
+            loadCart();
+        }
+    </script>
+</body>
+
+</html>
