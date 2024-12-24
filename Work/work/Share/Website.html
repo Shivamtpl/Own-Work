@@ -5,7 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Narasimya</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+         #ownerSection {
+                display: none;
+            }
+            button {
+                font-size: 16px;
+                margin: 5px;
+                padding: 10px;
+            }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -51,6 +60,7 @@
             font-weight: bold;
             margin-top: 10px;
         }
+        
 
         .price {
             color: green;
@@ -97,7 +107,7 @@
             text-align: center;
             margin-top: 20px;
         }
-
+       
         .action-buttons button {
             padding: 10px 20px;
             margin: 5px;
@@ -119,6 +129,16 @@
             background-color: red;
             color: white;
         }
+
+        .card-header{
+    height: 160px;
+    overflow: hidden;
+    }
+    .card-header:hover img{
+        transform: scale(1.5);
+        transition: 1s;
+    }
+        
     </style>
 </head>
 
@@ -132,27 +152,34 @@
         <section id="shopSection">
             <h2>Ur's Shop</h2>
             <main>
-                <div class="card">
-                    <img src="../images/Freedom.png" alt="Freedom Oil">
+            <div class="card">
+                <div class="card-header">
+            <img src="../images/Freedom.png" alt="Freedom Oil"> 
+        </div>
                     <div class="card-title">Freedom Oil</div>
                     <div class="price">₹145</div>
                     <button class="card-button" onclick="addToCart('Freedom Oil', 145)">Add to Cart</button>
                 </div>
                 <div class="card">
+                <div class="card-header">
                     <img src="../images/parle-g.png" alt="Parle-G Biscuits">
+                    </div>
                     <div class="card-title">Parle-G Biscuits</div>
                     <div class="price">₹10</div>
                     <button class="card-button" onclick="addToCart('Parle-G Biscuits', 10)">Add to Cart</button>
                 </div>
                 <div class="card">
+                <div class="card-header">
                     <img src="../images/CloseUp.png" alt="CloseUp Toothpaste">
+                    </div>
                     <div class="card-title">CloseUp Toothpaste</div>
                     <div class="price">₹50</div>
                     <button class="card-button" onclick="addToCart('CloseUp Toothpaste', 50)">Add to Cart</button>
                 </div>
             </main>
             <div class="action-buttons">
-                <button onclick="showCart()">My Bag</button>
+                <!-- <i class="fa-solid fa-bag-shopping"></i> -->
+                <button onclick="showCart()"class="fa-solid fa-bag-shopping">&nbsp;&nbsp; My Bag</button>
             </div>
         </section>
 
@@ -162,9 +189,11 @@
             <table>
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>S.No</th>
                         <th>Item</th>
+                        <th>Quantity</th>
                         <th>Price (₹)</th>
+                        <!-- <th>Actions</th> -->
                     </tr>
                 </thead>
                 <tbody id="cartItems">
@@ -180,6 +209,59 @@
     </div>
 
     <script>
+        const ownerTableData = {
+                'Rice': {
+                    headers: ["S.No", "Brand Name", "Quantity", "Price"],
+                    rows: [
+                        ["1", "JSR", "24kg", "1350"],
+                        ["2", "RK", "24kg", "1200"],
+                        ["3", "Tomato Rice", "24kg", "1080"],
+                        ["4", "Basmati Rice", "1kg", "115"],
+                    ]
+                },
+            }
+            function loadButtons(containerId, buttonNames, buttonClass, section) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                buttonNames.forEach(name => {
+                    const button = document.createElement('button');
+                    button.textContent = name;
+                    button.className = buttonClass;
+                    button.onclick = () => navigateToTable(name, section);
+                    container.appendChild(button);
+                });
+            }
+            function showOwnerSection() {
+                const password = prompt("Enter password for Owner access:");
+                navigateTo('ownerSection');
+                if(password==="owner123") {
+                navigateTo('ownerSection');
+                loadButtons('ownerButtons', ['Rice'], 'common-button', 'owner');
+            } else{
+                alert("Incorrect password");
+            }
+            }
+            function navigateTo(sectionId) {
+                const sections = ['mainSection', 'ownerSection'];
+                sections.forEach(id => document.getElementById(id).style.display = 'none');
+                document.getElementById(sectionId).style.display = 'block';
+                historyStack.push(sectionId);
+            }
+
+            function goBack() {
+                historyStack.pop();
+                const previousSection = historyStack.pop();
+                navigateTo(previousSection || 'mainSection');
+            }
+            function searchButtons(query) {
+            query = query.toLowerCase();
+            const buttons = document.querySelectorAll('.buttons button');
+            buttons.forEach(button => {
+                const text = button.textContent.toLowerCase();
+                button.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
         // Function to add items to the cart
         function addToCart(itemName, itemPrice) {
             const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
@@ -203,31 +285,56 @@
 
         // Function to load cart items
         function loadCart() {
-            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartTable = document.getElementById('cartItems');
-            const totalPriceElement = document.getElementById('totalPrice');
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartTable = document.getElementById('cartItems');
+    const totalPriceElement = document.getElementById('totalPrice');
 
-            if (cartItems.length === 0) {
-                cartTable.innerHTML = '<tr><td colspan="3">Your cart is empty!</td></tr>';
-                totalPriceElement.innerHTML = 'Total: ₹0';
-                return;
-            }
+    if (cartItems.length === 0) {
+        cartTable.innerHTML = '<tr><td colspan="5">Your cart is empty!</td></tr>';
+        totalPriceElement.innerHTML = 'Total: ₹0';
+        return;
+    }
 
             let total = 0;
             cartTable.innerHTML = '';
             cartItems.forEach((item, index) => {
-                total += item.price;
+                total += item.price * item.quantity;;
                 cartTable.innerHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${item.name}</td>
-                        <td>₹${item.price}</td>
-                    </tr>
-                `;
-            });
+                   <tr>
+                <td>${index + 1}</td>
+                <td>${item.name}</td>
+                <td>
+                <button onclick="decreaseQuantity(${index})">-</button>
+                    ${item.quantity}
+                    <button onclick="increaseQuantity(${index})">+</button>
+                    </td>
+                <td>₹${item.price * item.quantity}</td>
+            </tr>
+        `;
+    });
 
             totalPriceElement.innerHTML = `Total: ₹${total}`;
         }
+
+// Function to increase the quantity of an item
+function increaseQuantity(index) {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    cartItems[index].quantity += 1; // Increase quantity
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    loadCart(); // Reload the cart
+}
+// Function to decrease the quantity of an item
+function decreaseQuantity(index) {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cartItems[index].quantity > 1) {
+        cartItems[index].quantity -= 1; // Decrease quantity
+    } else {
+        cartItems.splice(index, 1); // Remove item if quantity is 0
+    }
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    loadCart(); // Reload the cart
+}
+
 
         // Function to clear the cart
         function clearCart() {
@@ -236,6 +343,4 @@
             loadCart();
         }
     </script>
-</body>
-
 </html>
