@@ -95,6 +95,25 @@
     background-clip: text;
     animation: aurora 5s infinite linear;
 }
+.modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: whitesmoke;
+            margin: 15% auto;
+            padding: 20px;
+            border: 2px solid #f6de04;
+            width: 300px;
+            text-align: center;
+        }
 
 /* Animation for moving gradient */
 @keyframes aurora {
@@ -278,22 +297,34 @@
                 });
             }
 
-            function showOwnerSection() {
-                const password = prompt("Enter password for Owner access:");
-                navigateTo('ownerSection');
-                if(password==="owner123") {
-                navigateTo('ownerSection');
-                loadButtons('ownerButtons', ['Rice', 'Oils', "Atta's & Rava", "Chilli Powder,etc",'Outside Item',
-                'Online', 'Soaps', 'Papudalu', "Other's'"], 'common-button', 'owner');
-            } else{
-                alert("Incorrect password");
-            }
-            }
+            // Function to display the password modal and handle access
+function showOwnerSection() {
+    // Display the modal for password entry
+    const passwordModal = document.getElementById('passwordModal');
+    passwordModal.style.display = 'block';
+}
 
-            // function navigateToTable(buttonName, section) {
-            //     navigateTo('tableSection');
-            //     createTable(buttonName, section);
-            // }
+// Function to handle the password submission
+function checkPassword() {
+    const passwordInput = document.getElementById('passwordInput').value;
+
+    if (passwordInput === "owner123") {
+        previousSection = 'owner'; // Track that we're in the Owner section
+        document.getElementById('mainSection').style.display = 'none'; // Hide the main section
+        document.getElementById('ownerSection').style.display = 'block'; // Show the owner section
+        document.getElementById('passwordModal').style.display = 'none'; // Hide the modal
+        document.getElementById('passwordInput').value = ''; // Clear the password input
+
+        loadButtons('ownerButtons', 
+            ['Rice', 'Oils', "Atta's & Rava", "Chilli Powder,etc", 'Outside Item', 
+            'Online', 'Soaps', 'Papudalu', "Other's"], 
+            'common-button', 'owner'
+        );
+    } else {
+        alert("Incorrect password. Access denied.");
+    }
+}
+
          function navigateToTable(buttonName, section) {
               navigateTo('tableSection');
 
@@ -314,10 +345,29 @@
             }
 
             function goBack() {
-                historyStack.pop();
-                const previousSection = historyStack.pop();
-                navigateTo(previousSection || 'mainSection');
-            }
+    // Hide the table section
+    document.getElementById('tableSection').style.display = 'none';
+
+    // Check the previous section and navigate accordingly
+    if (previousSection === 'owner') {
+        // Show the Owner section and ensure others are hidden
+        document.getElementById('ownerSection').style.display = 'block';
+        document.getElementById('mainSection').style.display = 'none';
+    } else if (previousSection === 'customer') {
+        // Show the Customer section if implemented later
+        // document.getElementById('customerSection').style.display = 'block';
+        // document.getElementById('mainSection').style.display = 'none';
+    } else {
+        // If previousSection is not set, return to the main section
+        document.getElementById('ownerSection').style.display = 'none';
+        // document.getElementById('customerSection').style.display = 'none';
+        document.getElementById('mainSection').style.display = 'block';
+    }
+
+    // Clear the previousSection if necessary
+    previousSection = null;
+}
+
 
             function createTable(buttonName, section) {
                 const tableContainer = document.getElementById('dynamicTable');
@@ -403,5 +453,14 @@
             <button id="downloadPdfButton" style="background-color: #4682B4; color: white;">Download PDF</button>
             <button onclick="goBack()" style="background-color: rgba(233, 7, 7, 0.852);">Go Back</button>
         </div>
+    <!-- Password Modal -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <h3>Enter Password</h3>
+        <input type="password" id="passwordInput" placeholder="Enter password" /><br>
+        <button onclick="checkPassword()" style="background-color: rgb(37, 234, 37);">Submit</button>
+        <button onclick="document.getElementById('passwordModal').style.display = 'none';" style="background-color: #ff0004;">Cancel</button>
+    </div>
+</div>
     </body>
 </html>
