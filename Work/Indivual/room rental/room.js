@@ -136,28 +136,17 @@ function resetPassword() {
   document.getElementById("loginSection").style.display = "block";
 }
 
-function togglePassword() {
-  const pwdInput = document.getElementById("password");
-  const toggle = document.querySelector(".toggle-password");
-
-  if (pwdInput.type === "password") {
-    pwdInput.type = "text";
-    toggle.textContent = "🙈"; // hide icon
-  } else {
-    pwdInput.type = "password";
-    toggle.textContent = "👁️"; // show icon
-  }
-}
 function togglePassword(inputId, iconElement) {
   const input = document.getElementById(inputId);
   if (input.type === "password") {
     input.type = "text";
-    iconElement.textContent = "🙈";
+    iconElement.textContent = "🙈"; // change to hide
   } else {
     input.type = "password";
-    iconElement.textContent = "👁️";
+    iconElement.textContent = "👁️"; // change to show
   }
 }
+
 
 
 
