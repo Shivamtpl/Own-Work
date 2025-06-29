@@ -49,34 +49,12 @@ main { display:grid; gap:20px; padding:20px;
   position: relative;
   display: flex;
   align-items: center;
-}
-
-.password-wrapper input {
-  width: 100%;
-  padding-right: 40px; /* space for the eye icon */
-}
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  cursor: pointer;
-  user-select: none;
-  font-size: 18px;
-  color: #333;
-}
-
-
-/* 2nd one added */
-.password-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
   margin: 10px 0;
 }
 
 .password-wrapper input {
   width: 100%;
-  padding-right: 40px; /* make room for eye icon */
+  padding-right: 40px;
 }
 
 .toggle-password {
@@ -87,4 +65,3 @@ main { display:grid; gap:20px; padding:20px;
   font-size: 18px;
   color: #333;
 }
-
