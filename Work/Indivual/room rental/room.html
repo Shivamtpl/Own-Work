@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Room Rentals – NoBroker Style</title>
+  <link rel="stylesheet" href="room.css"/>
+</head>
+<body>
+  <!-- Login Section -->
+ <section id="loginSection">
+  <div class="login-box">
+    <h2>Login</h2>
+
+    <input type="text" id="contactInfo" placeholder="Phone number or Email" />
+    <div class="password-wrapper">
+  <input type="password" id="password" placeholder="Password" />
+  <span class="toggle-password" onclick="togglePassword()">👁️</span>
+</div>
+    <!-- <input type="password" id="password" placeholder="Password" /> -->
+    <button onclick="handleLogin()">Login</button>
+
+    <p class="forgot-link">
+      <button onclick="handleForgotPassword()">Forgot Password?</button>
+    </p>
+
+    <p id="loginError" class="error-text"></p>
+  </div>
+</section>
+<!-- Password Reset Section -->
+<section id="resetSection" style="display: none;">
+  <div class="login-box">
+    <h2>Reset Password</h2>
+
+    <div class="password-wrapper">
+      <input type="password" id="newPassword" placeholder="New Password" />
+      <span class="toggle-password" onclick="togglePassword('newPassword', this)">👁️</span>
+    </div>
+
+    <div class="password-wrapper">
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+      <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁️</span>
+    </div>
+
+    <button onclick="resetPassword()">Submit</button>
+    <p id="resetError" class="error-text"></p>
+  </div>
+</section>
+
+
+
+
+  <!-- App Section -->
+  <section id="appSection" style="display:none;">
+    <header>
+      <h1>Room Rentals</h1>
+      <button onclick="handleLogout()">Logout</button>
+    </header>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <select id="filterCity">
+        <option value="">Select City</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Delhi">New Delhi</option>
+      </select>
+
+      <select id="filterType">
+        <option value="">Room Type</option>
+        <option value="2BHK">2BHK</option>
+        <option value="1RK">1RK</option>
+        <option value="Studio">Studio</option>
+      </select>
+
+      <input type="number" id="filterMin" placeholder="Min Price" />
+      <input type="number" id="filterMax" placeholder="Max Price" />
+      <button onclick="applyFilters()">Apply</button>
+      <button onclick="clearFilters()">Clear</button>
+    </div>
+
+    <!-- Listings -->
+    <main id="listingsContainer"></main>
+  </section>
+
+  <script src="room.js"></script>
+</body>
+</html>

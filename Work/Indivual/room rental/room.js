@@ -1,0 +1,172 @@
+const listings = [
+  {id:1, city:"Mumbai", type:"2BHK", title:"2BHK in Mumbai", location:"Andheri West", price:15000, image:"https://source.unsplash.com/400x300/?room1"},
+  {id:2, city:"Bangalore", type:"1RK", title:"1RK in Bangalore", location:"Indiranagar", price:8000, image:"https://source.unsplash.com/400x300/?room2"},
+  {id:3, city:"Delhi", type:"Studio", title:"Studio Flat in Delhi", location:"Saket", price:12000, image:"https://source.unsplash.com/400x300/?room3"},
+];
+
+const container = document.getElementById("listingsContainer");
+const citySel = document.getElementById("filterCity");
+const typeSel = document.getElementById("filterType");
+const minInput = document.getElementById("filterMin");
+const maxInput = document.getElementById("filterMax");
+
+function renderListings(items) {
+  container.innerHTML = "";
+  items.forEach(l => {
+    const card = document.createElement("div"); card.className="card";
+    card.innerHTML = `
+      <img src="${l.image}" alt="${l.title}">
+      <div class="card-content">
+        <h3>${l.title}</h3>
+        <p>${l.location}, ${l.city}</p>
+        <p class="price">₹${l.price}/month</p>
+        <button>View Details</button>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function applyFilters() {
+  const city = citySel.value, type = typeSel.value;
+  const min = parseInt(minInput.value)||0, max = parseInt(maxInput.value)||Infinity;
+  const filtered = listings.filter(l =>
+    (city? l.city===city : true) &&
+    (type? l.type===type : true) &&
+    (l.price >= min && l.price <= max)
+  );
+  renderListings(filtered);
+}
+
+function clearFilters() {
+  citySel.value = ""; typeSel.value = ""; minInput.value = ""; maxInput.value = "";
+  renderListings(listings);
+}
+
+// Simulated user (could be pre-registered)
+if (!localStorage.getItem("users")) {
+  const users = [{ contact: "9999999999", password: "admin123" }];
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+
+function handleLogin() {
+  const contact = document.getElementById("contactInfo").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const errBox = document.getElementById("loginError");
+
+  if (contact === "" || password === "") {
+    errBox.textContent = "All fields are required!";
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const matchedUser = users.find(u => u.contact === contact && u.password === password);
+
+  if (matchedUser) {
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("appSection").style.display = "block";
+    renderListings(listings);
+  } else {
+    errBox.textContent = "Invalid credentials!";
+  }
+}
+
+
+function handleForgotPassword() {
+  const contact = document.getElementById("contactInfo").value.trim();
+  const errBox = document.getElementById("loginError");
+
+  if (contact === "") {
+    errBox.textContent = "Please enter your phone number or email.";
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const matchedUser = users.find(u => u.contact === contact);
+
+  if (!matchedUser) {
+    errBox.textContent = "User not found!";
+    return;
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  localStorage.setItem("resetOTP", otp);
+  localStorage.setItem("resetUser", contact);
+  alert(`OTP sent to ${contact}: ${otp}`);
+
+  const userOtp = prompt("Enter the OTP you received:");
+  if (userOtp == otp) {
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("resetSection").style.display = "block";
+  } else {
+    alert("Incorrect OTP.");
+  }
+}
+function resetPassword() {
+  const newPass = document.getElementById("newPassword").value.trim();
+  const confirmPass = document.getElementById("confirmPassword").value.trim();
+  const errBox = document.getElementById("resetError");
+
+  if (newPass === "" || confirmPass === "") {
+    errBox.textContent = "Both fields are required!";
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    errBox.textContent = "Passwords do not match!";
+    return;
+  }
+
+  const contact = localStorage.getItem("resetUser");
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  users = users.map(u => {
+    if (u.contact === contact) {
+      return { ...u, password: newPass };
+    }
+    return u;
+  });
+
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Password has been reset successfully!");
+
+  // Return to login
+  document.getElementById("resetSection").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
+}
+
+function togglePassword() {
+  const pwdInput = document.getElementById("password");
+  const toggle = document.querySelector(".toggle-password");
+
+  if (pwdInput.type === "password") {
+    pwdInput.type = "text";
+    toggle.textContent = "🙈"; // hide icon
+  } else {
+    pwdInput.type = "password";
+    toggle.textContent = "👁️"; // show icon
+  }
+}
+function togglePassword(inputId, iconElement) {
+  const input = document.getElementById(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    iconElement.textContent = "🙈";
+  } else {
+    input.type = "password";
+    iconElement.textContent = "👁️";
+  }
+}
+
+
+
+
+function handleLogout() {
+  document.getElementById("appSection").style.display="none";
+  document.getElementById("loginSection").style.display="block";
+  document.getElementById("loginError").textContent = "";
+}
+
+// Initial state
+renderListings(listings);
