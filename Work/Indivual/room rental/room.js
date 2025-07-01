@@ -1,6 +1,6 @@
 const listings = [
   {id:1, city:"Mumbai", type:"2BHK", title:"2BHK in Mumbai", location:"Andheri West", price:15000, image:"https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"},
-  {id:2, city:"Bangalore", type:"1RK", title:"1RK in Bangalore", location:"Indiranagar", price:8000, image:"/Work/work/images/room.webp"},
+  {id:2, city:"Bangalore", type:"1RK", title:"1RK in Bangalore", location:"Indiranagar", price:8000, image:"https://cdn.pixabay.com/photo/2016/08/26/15/06/home-1622401_1280.jpg"},
   {id:3, city:"Delhi", type:"Studio", title:"Studio Flat in Delhi", location:"Saket", price:12000, image:"https://images.pexels.com/photos/8141959/pexels-photo-8141959.jpeg"},
 ];
 
