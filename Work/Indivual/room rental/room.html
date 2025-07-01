@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Room Rentals – NoBroker Style</title>
+  <title>Room Rentals</title>
   <link rel="stylesheet" href="room.css"/>
 </head>
 <body>
-  <!-- Login Section -->
+
+  
+ <!-- Login Section -->
  <section id="loginSection">
   <div class="login-box">
     <h2>Login</h2>
-
     <input type="text" id="contactInfo" placeholder="Phone number or Email" />
     <div class="password-wrapper">
   <input type="password" id="password" placeholder="Password" />
@@ -47,13 +48,10 @@
   </div>
 </section>
 
-
-
-
   <!-- App Section -->
   <section id="appSection" style="display:none;">
     <header>
-      <h1>Room Rentals</h1>
+      <h1 style="color: rgb(4, 254, 29);">Room Rentals</h1>
       <button onclick="handleLogout()">Logout</button>
     </header>
 
@@ -85,4 +83,15 @@
 
   <script src="room.js"></script>
 </body>
+<!-- Modal -->
+<div id="detailsModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3 id="modalTitle"></h3>
+    <p id="modalLocation"></p>
+    <p id="modalPrice"></p>
+    <p id="modalDescription"></p>
+    <p id="modalContact"></p>
+  </div>
+</div>
 </html>

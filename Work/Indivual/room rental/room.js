@@ -1,7 +1,7 @@
 const listings = [
-  {id:1, city:"Mumbai", type:"2BHK", title:"2BHK in Mumbai", location:"Andheri West", price:15000, image:"https://source.unsplash.com/400x300/?room1"},
-  {id:2, city:"Bangalore", type:"1RK", title:"1RK in Bangalore", location:"Indiranagar", price:8000, image:"https://source.unsplash.com/400x300/?room2"},
-  {id:3, city:"Delhi", type:"Studio", title:"Studio Flat in Delhi", location:"Saket", price:12000, image:"https://source.unsplash.com/400x300/?room3"},
+  {id:1, city:"Mumbai", type:"2BHK", title:"2BHK in Mumbai", location:"Andheri West", price:15000, image:"https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"},
+  {id:2, city:"Bangalore", type:"1RK", title:"1RK in Bangalore", location:"Indiranagar", price:8000, image:"/Work/work/images/room.webp"},
+  {id:3, city:"Delhi", type:"Studio", title:"Studio Flat in Delhi", location:"Saket", price:12000, image:"https://images.pexels.com/photos/8141959/pexels-photo-8141959.jpeg"},
 ];
 
 const container = document.getElementById("listingsContainer");
@@ -10,21 +10,52 @@ const typeSel = document.getElementById("filterType");
 const minInput = document.getElementById("filterMin");
 const maxInput = document.getElementById("filterMax");
 
+
 function renderListings(items) {
   container.innerHTML = "";
+
+  const modal = document.getElementById("detailsModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalLocation = document.getElementById("modalLocation");
+  const modalPrice = document.getElementById("modalPrice");
+  const modalDescription = document.getElementById("modalDescription");
+  const modalContact = document.getElementById("modalContact");
+  const closeBtn = document.querySelector(".modal .close");
+
   items.forEach(l => {
-    const card = document.createElement("div"); card.className="card";
+    const card = document.createElement("div");
+    card.className = "card";
+    
     card.innerHTML = `
       <img src="${l.image}" alt="${l.title}">
       <div class="card-content">
         <h3>${l.title}</h3>
         <p>${l.location}, ${l.city}</p>
         <p class="price">₹${l.price}/month</p>
-        <button>View Details</button>
+        <button class="details-btn">View Details</button>
       </div>`;
+
+    card.querySelector(".details-btn").addEventListener("click", () => {
+      modalTitle.textContent = l.title;
+      modalLocation.textContent = `${l.location}, ${l.city}`;
+      modalPrice.textContent = `₹${l.price}/month`;
+      modalDescription.textContent = `Description: ${l.description || "N/A"}`;
+      modalContact.textContent = `Contact: ${l.contact || "N/A"}`;
+      modal.classList.remove("hidden");
+    });
+
     container.appendChild(card);
   });
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  window.addEventListener("click", e => {
+    if (e.target === modal) modal.classList.add("hidden");
+  });
 }
+
 
 function applyFilters() {
   const city = citySel.value, type = typeSel.value;
