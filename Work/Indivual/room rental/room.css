@@ -1,6 +1,6 @@
 /* body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; } */
  body{
-      background-image: url('/Work/work/images/room.webp');
+      background-image: url('https://www.avail.co/wp-content/uploads/2023/01/renting-out-a-room-in-your-house-how-to-legally-do-it.jpg');
       background-repeat: no-repeat;
       background-size: cover;
       background-attachment: fixed;
@@ -129,7 +129,7 @@ main { display:grid; gap:20px; padding:20px;
   cursor: pointer;
 }
 #appSection {
-  background-image: url('/Work/work/images/room2.jpg'); /* adjust if path differs */
+  background-image: url('https://imageio.forbes.com/specials-images/imageserve/64511ec65d2635d70d1e6545/Airbnb-Rooms-Summer-2023/1960x0.jpg?format=jpg&width=1440'); /* adjust if path differs */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
