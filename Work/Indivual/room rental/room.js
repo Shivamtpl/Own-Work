@@ -1,7 +1,32 @@
+// ✅ Hardcoded listings
 const listings = [
-  {id:1, city:"Mumbai", type:"2BHK", title:"2BHK in Mumbai", location:"Andheri West", price:15000, image:"https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"},
-  {id:2, city:"Bangalore", type:"1RK", title:"1RK in Bangalore", location:"Indiranagar", price:8000, image:"https://cdn.pixabay.com/photo/2016/08/26/15/06/home-1622401_1280.jpg"},
-  {id:3, city:"Delhi", type:"Studio", title:"Studio Flat in Delhi", location:"Saket", price:12000, image:"https://images.pexels.com/photos/8141959/pexels-photo-8141959.jpeg"},
+  {
+    id: 1,
+    city: "Mumbai",
+    type: "2BHK",
+    title: "2BHK in Mumbai",
+    location: "Andheri West",
+    price: 15000,
+    image: "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"
+  },
+  {
+    id: 2,
+    city: "Bangalore",
+    type: "1RK",
+    title: "1RK in Bangalore",
+    location: "Indiranagar",
+    price: 8000,
+    image: "https://cdn.pixabay.com/photo/2016/08/26/15/06/home-1622401_1280.jpg"
+  },
+  {
+    id: 3,
+    city: "Delhi",
+    type: "Studio",
+    title: "Studio Flat in Delhi",
+    location: "Saket",
+    price: 12000,
+    image: "https://images.pexels.com/photos/8141959/pexels-photo-8141959.jpeg"
+  }
 ];
 
 const container = document.getElementById("listingsContainer");
@@ -10,8 +35,8 @@ const typeSel = document.getElementById("filterType");
 const minInput = document.getElementById("filterMin");
 const maxInput = document.getElementById("filterMax");
 
-
-function fetchListings(items) {
+// ✅ Reusable function to render listings
+function renderListings(items) {
   container.innerHTML = "";
 
   const modal = document.getElementById("detailsModal");
@@ -25,7 +50,6 @@ function fetchListings(items) {
   items.forEach(l => {
     const card = document.createElement("div");
     card.className = "card";
-    
     card.innerHTML = `
       <img src="${l.image}" alt="${l.title}">
       <div class="card-content">
@@ -55,66 +79,46 @@ function fetchListings(items) {
     if (e.target === modal) modal.classList.add("hidden");
   });
 }
-async function fetchListings() {
-  try {
-    const res = await fetch("http://localhost:8080/api/listings");
-    const data = await res.json();
-    renderListings(data);
-  } catch (err) {
-    console.error("Failed to fetch listings:", err);
-  }
-}
 
-// Initial call
-fetchListings();
-
-async function applyFilters() {
+// ✅ Filter function (local filtering)
+function applyFilters() {
   const city = citySel.value;
   const type = typeSel.value;
-  const min = minInput.value || 0;
-  const max = maxInput.value || 999999;
+  const min = parseInt(minInput.value) || 0;
+  const max = parseInt(maxInput.value) || Infinity;
 
-  try {
-    const response = await fetch(`http://localhost:8080/api/listings/filter?city=${city}&type=${type}&min=${min}&max=${max}`);
-    const data = await response.json();
-    renderListings(data);
-  } catch (error) {
-    console.error("Filter error:", error);
-  }
+  const filtered = listings.filter(l =>
+    (!city || l.city === city) &&
+    (!type || l.type === type) &&
+    l.price >= min && l.price <= max
+  );
+
+  renderListings(filtered);
 }
 
-// function applyFilters() {
-//   const city = citySel.value, type = typeSel.value;
-//   const min = parseInt(minInput.value)||0, max = parseInt(maxInput.value)||Infinity;
-//   const filtered = listings.filter(l =>
-//     (city? l.city===city : true) &&
-//     (type? l.type===type : true) &&
-//     (l.price >= min && l.price <= max)
-//   );
-//   renderListings(filtered);
-// }
-
 function clearFilters() {
-  citySel.value = ""; typeSel.value = ""; minInput.value = ""; maxInput.value = "";
+  citySel.value = "";
+  typeSel.value = "";
+  minInput.value = "";
+  maxInput.value = "";
   renderListings(listings);
 }
 
-
+// ✅ Local user setup
 const updatedContact = "0123456789";
 const storedUsers = JSON.parse(localStorage.getItem("users"));
-
 if (!storedUsers || storedUsers[0].contact !== updatedContact) {
   const users = [{ contact: updatedContact, password: "admin123" }];
   localStorage.setItem("users", JSON.stringify(users));
 }
 
-
+// ✅ Login & Auth
 function handleLogin() {
   const contact = document.getElementById("contactInfo").value.trim();
   const password = document.getElementById("password").value.trim();
   const errBox = document.getElementById("loginError");
 
-  if (contact === "" || password === "") {
+  if (!contact || !password) {
     errBox.textContent = "All fields are required!";
     return;
   }
@@ -131,12 +135,11 @@ function handleLogin() {
   }
 }
 
-
 function handleForgotPassword() {
   const contact = document.getElementById("contactInfo").value.trim();
   const errBox = document.getElementById("loginError");
 
-  if (contact === "") {
+  if (!contact) {
     errBox.textContent = "Please enter your phone number or email.";
     return;
   }
@@ -162,12 +165,13 @@ function handleForgotPassword() {
     alert("Incorrect OTP.");
   }
 }
+
 function resetPassword() {
   const newPass = document.getElementById("newPassword").value.trim();
   const confirmPass = document.getElementById("confirmPassword").value.trim();
   const errBox = document.getElementById("resetError");
 
-  if (newPass === "" || confirmPass === "") {
+  if (!newPass || !confirmPass) {
     errBox.textContent = "Both fields are required!";
     return;
   }
@@ -180,42 +184,28 @@ function resetPassword() {
   const contact = localStorage.getItem("resetUser");
   let users = JSON.parse(localStorage.getItem("users")) || [];
 
-  users = users.map(u => {
-    if (u.contact === contact) {
-      return { ...u, password: newPass };
-    }
-    return u;
-  });
+  users = users.map(u =>
+    u.contact === contact ? { ...u, password: newPass } : u
+  );
 
   localStorage.setItem("users", JSON.stringify(users));
-
   alert("Password has been reset successfully!");
 
-  // Return to login
   document.getElementById("resetSection").style.display = "none";
   document.getElementById("loginSection").style.display = "block";
 }
 
 function togglePassword(inputId, iconElement) {
   const input = document.getElementById(inputId);
-  if (input.type === "password") {
-    input.type = "text";
-    iconElement.textContent = "🙈"; // change to hide
-  } else {
-    input.type = "password";
-    iconElement.textContent = "👁️"; // change to show
-  }
+  input.type = input.type === "password" ? "text" : "password";
+  iconElement.textContent = input.type === "password" ? "👁️" : "🙈";
 }
 
-
-
-
-
 function handleLogout() {
-  document.getElementById("appSection").style.display="none";
-  document.getElementById("loginSection").style.display="block";
+  document.getElementById("appSection").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
   document.getElementById("loginError").textContent = "";
 }
 
-// Initial state
+// ✅ Initial state (local)
 renderListings(listings);
