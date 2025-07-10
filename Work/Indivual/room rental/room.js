@@ -11,7 +11,7 @@ const minInput = document.getElementById("filterMin");
 const maxInput = document.getElementById("filterMax");
 
 
-function renderListings(items) {
+function fetchListings(items) {
   container.innerHTML = "";
 
   const modal = document.getElementById("detailsModal");
@@ -55,18 +55,44 @@ function renderListings(items) {
     if (e.target === modal) modal.classList.add("hidden");
   });
 }
-
-
-function applyFilters() {
-  const city = citySel.value, type = typeSel.value;
-  const min = parseInt(minInput.value)||0, max = parseInt(maxInput.value)||Infinity;
-  const filtered = listings.filter(l =>
-    (city? l.city===city : true) &&
-    (type? l.type===type : true) &&
-    (l.price >= min && l.price <= max)
-  );
-  renderListings(filtered);
+async function fetchListings() {
+  try {
+    const res = await fetch("http://localhost:8080/api/listings");
+    const data = await res.json();
+    renderListings(data);
+  } catch (err) {
+    console.error("Failed to fetch listings:", err);
+  }
 }
+
+// Initial call
+fetchListings();
+
+async function applyFilters() {
+  const city = citySel.value;
+  const type = typeSel.value;
+  const min = minInput.value || 0;
+  const max = maxInput.value || 999999;
+
+  try {
+    const response = await fetch(`http://localhost:8080/api/listings/filter?city=${city}&type=${type}&min=${min}&max=${max}`);
+    const data = await response.json();
+    renderListings(data);
+  } catch (error) {
+    console.error("Filter error:", error);
+  }
+}
+
+// function applyFilters() {
+//   const city = citySel.value, type = typeSel.value;
+//   const min = parseInt(minInput.value)||0, max = parseInt(maxInput.value)||Infinity;
+//   const filtered = listings.filter(l =>
+//     (city? l.city===city : true) &&
+//     (type? l.type===type : true) &&
+//     (l.price >= min && l.price <= max)
+//   );
+//   renderListings(filtered);
+// }
 
 function clearFilters() {
   citySel.value = ""; typeSel.value = ""; minInput.value = ""; maxInput.value = "";
