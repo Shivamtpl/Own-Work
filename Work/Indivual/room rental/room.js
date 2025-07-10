@@ -99,9 +99,12 @@ function clearFilters() {
   renderListings(listings);
 }
 
-// Simulated user (could be pre-registered)
-if (!localStorage.getItem("users")) {
-  const users = [{ contact: "0123456789", password: "admin123" }];
+
+const updatedContact = "0123456789";
+const storedUsers = JSON.parse(localStorage.getItem("users"));
+
+if (!storedUsers || storedUsers[0].contact !== updatedContact) {
+  const users = [{ contact: updatedContact, password: "admin123" }];
   localStorage.setItem("users", JSON.stringify(users));
 }
 
