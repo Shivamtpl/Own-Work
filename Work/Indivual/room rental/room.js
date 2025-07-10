@@ -101,7 +101,7 @@ function clearFilters() {
 
 // Simulated user (could be pre-registered)
 if (!localStorage.getItem("users")) {
-  const users = [{ contact: "9999999999", password: "admin123" }];
+  const users = [{ contact: "0123456789", password: "admin123" }];
   localStorage.setItem("users", JSON.stringify(users));
 }
 
