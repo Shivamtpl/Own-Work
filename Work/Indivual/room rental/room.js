@@ -7,7 +7,11 @@ const listings = [
     title: "2BHK in Mumbai",
     location: "Andheri West",
     price: 15000,
-    image: "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"
+    images: [
+      "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg",
+      "https://cdn.pixabay.com/photo/2016/08/26/15/06/home-1622401_1280.jpg",
+      "https://images.pexels.com/photos/8141959/pexels-photo-8141959.jpeg"
+    ]
   },
   {
     id: 2,
@@ -16,7 +20,7 @@ const listings = [
     title: "1RK in Bangalore",
     location: "Indiranagar",
     price: 8000,
-    image: "https://cdn.pixabay.com/photo/2016/08/26/15/06/home-1622401_1280.jpg"
+    images: ["https://cdn.pixabay.com/photo/2016/08/26/15/06/home-1622401_1280.jpg"]
   },
   {
     id: 3,
@@ -25,7 +29,7 @@ const listings = [
     title: "Studio Flat in Delhi",
     location: "Saket",
     price: 12000,
-    image: "https://images.pexels.com/photos/8141959/pexels-photo-8141959.jpeg"
+    images: ["https://images.pexels.com/photos/8141959/pexels-photo-8141959.jpeg"]
   }
 ];
 
@@ -35,23 +39,17 @@ const typeSel = document.getElementById("filterType");
 const minInput = document.getElementById("filterMin");
 const maxInput = document.getElementById("filterMax");
 
-// ✅ Reusable function to render listings
+let currentImageIndex = 0;
+let currentListingImages = [];
+
 function renderListings(items) {
   container.innerHTML = "";
-
-  const modal = document.getElementById("detailsModal");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalLocation = document.getElementById("modalLocation");
-  const modalPrice = document.getElementById("modalPrice");
-  const modalDescription = document.getElementById("modalDescription");
-  const modalContact = document.getElementById("modalContact");
-  const closeBtn = document.querySelector(".modal .close");
 
   items.forEach(l => {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <img src="${l.image}" alt="${l.title}">
+      <img src="${l.images[0]}" alt="${l.title}">
       <div class="card-content">
         <h3>${l.title}</h3>
         <p>${l.location}, ${l.city}</p>
@@ -60,27 +58,58 @@ function renderListings(items) {
       </div>`;
 
     card.querySelector(".details-btn").addEventListener("click", () => {
-      modalTitle.textContent = l.title;
-      modalLocation.textContent = `${l.location}, ${l.city}`;
-      modalPrice.textContent = `₹${l.price}/month`;
-      modalDescription.textContent = `Description: ${l.description || "N/A"}`;
-      modalContact.textContent = `Contact: ${l.contact || "N/A"}`;
-      modal.classList.remove("hidden");
+      showModal(l);
     });
 
     container.appendChild(card);
   });
-
-  closeBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
-
-  window.addEventListener("click", e => {
-    if (e.target === modal) modal.classList.add("hidden");
-  });
 }
 
-// ✅ Filter function (local filtering)
+function showModal(listing) {
+  const modal = document.getElementById("detailsModal");
+  const modalImage = document.getElementById("modalImage");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalLocation = document.getElementById("modalLocation");
+  const modalPrice = document.getElementById("modalPrice");
+  const modalDescription = document.getElementById("modalDescription");
+  const modalContact = document.getElementById("modalContact");
+
+  modalTitle.textContent = listing.title;
+  modalLocation.textContent = `${listing.location}, ${listing.city}`;
+  modalPrice.textContent = `₹${listing.price}/month`;
+  modalDescription.textContent = `Description: ${listing.description || "N/A"}`;
+  modalContact.textContent = `Contact: ${listing.contact || "N/A"}`;
+
+  currentListingImages = listing.images || [];
+  currentImageIndex = 0;
+  modalImage.src = currentListingImages[currentImageIndex];
+
+  modal.classList.remove("hidden");
+}
+
+document.getElementById("prevImage").addEventListener("click", () => {
+  if (currentListingImages.length > 0) {
+    currentImageIndex = (currentImageIndex - 1 + currentListingImages.length) % currentListingImages.length;
+    document.getElementById("modalImage").src = currentListingImages[currentImageIndex];
+  }
+});
+
+document.getElementById("nextImage").addEventListener("click", () => {
+  if (currentListingImages.length > 0) {
+    currentImageIndex = (currentImageIndex + 1) % currentListingImages.length;
+    document.getElementById("modalImage").src = currentListingImages[currentImageIndex];
+  }
+});
+
+document.querySelector(".modal .close").addEventListener("click", () => {
+  document.getElementById("detailsModal").classList.add("hidden");
+});
+
+window.addEventListener("click", e => {
+  const modal = document.getElementById("detailsModal");
+  if (e.target === modal) modal.classList.add("hidden");
+});
+
 function applyFilters() {
   const city = citySel.value;
   const type = typeSel.value;
@@ -112,7 +141,6 @@ if (!storedUsers || storedUsers[0].contact !== updatedContact) {
   localStorage.setItem("users", JSON.stringify(users));
 }
 
-// ✅ Login & Auth
 function handleLogin() {
   const contact = document.getElementById("contactInfo").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -207,5 +235,4 @@ function handleLogout() {
   document.getElementById("loginError").textContent = "";
 }
 
-// ✅ Initial state (local)
 renderListings(listings);
